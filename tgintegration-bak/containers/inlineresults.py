@@ -1,21 +1,25 @@
 import re
 from operator import attrgetter
-from typing import List
+from typing import List, Pattern, Set, TypeVar
 
 from pyrogram.api.types import BotInlineResult
+from pyrogram.api.types.messages import BotResults
+from pyrogram.client.filters.filter import Filter
+
+InteractionClient = TypeVar('InteractionClient')
 
 
 class InlineResult:
-    def __init__(self, client, result, query_id):
+    def __init__(self, client: InteractionClient, result: BotInlineResult, query_id: int):
         self._client = client
         self.result = result
         self.query_id = query_id
 
     def send(
             self,
-            chat_id,
-            disable_notification,
-            reply_to_message_id
+            chat_id: int or str,
+            disable_notification: bool = None,
+            reply_to_message_id: int = None
     ):
         return self._client.send_inline_bot_result(
             chat_id,
@@ -27,16 +31,14 @@ class InlineResult:
 
     def send_await(
             self,
-            chat_id,
-            filters=None,
-            num_expected=None,
-            disable_notification=None,
-            reply_to_message_id=None
+            chat_id: int or str,
+            filters: Filter = None,
+            num_expected: int = None,
+            disable_notification: bool = None,
+            reply_to_message_id: int = None
     ):
         return self._client.send_inline_bot_result_await(
             chat_id,
-            query_id=self.query_id,
-            result_id=self.result.id,
             filters=filters,
             num_expected=num_expected,
             disable_notification=disable_notification,
@@ -60,10 +62,10 @@ class InlineResult:
 class InlineResultContainer:
     def __init__(
             self,
-            client,
+            client: InteractionClient,
             bot,
             query,
-            bot_results,
+            bot_results: BotResults,
             offset='',
             geo_point=None
     ):
@@ -109,7 +111,7 @@ class InlineResultContainer:
         text = "/start {}".format(self._bot_results.switch_pm.start_param or '').strip()
         self._client.send_message(self.bot, text)
 
-    def _match(self, pattern, getter):
+    def __match(self, pattern: Pattern, getter) -> List:
         results = []
         if pattern:
             compiled = re.compile(pattern)
@@ -121,11 +123,11 @@ class InlineResultContainer:
 
     def find_results(
             self,
-            title_pattern=None,
-            description_pattern=None,
-            message_pattern=None,
-            url_pattern=None
-    ):
+            title_pattern: Pattern = None,
+            description_pattern: Pattern = None,
+            message_pattern: Pattern = None,
+            url_pattern: Pattern = None
+    ) -> Set[InlineResult]:
 
         # TODO:
         # article_types: List[str] = None,
@@ -139,7 +141,7 @@ class InlineResultContainer:
 
         results = set()
         for item in d.items():
-            matches = self._match(*item)
+            matches = self.__match(*item)
             for r in matches:
                 results.add(
                     InlineResult(self._client, r, self.query_id)

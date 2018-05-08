@@ -4,6 +4,7 @@
 from typing import Any, Callable, List, Union
 
 from pyrogram import ChatAction
+from pyrogram.api import Object
 from pyrogram.api.types import BotCommand, PeerUser
 from pyrogram.client.filters.filter import Filter
 # noinspection PyMissingConstructor
@@ -19,19 +20,19 @@ class BotIntegrationClient(InteractionClient):
     peer: PeerUser = ...
     peer_id: int = ...
     command_list: List[BotCommand] = ...
-
     _last_response: Response = ...
 
     def __init__(
-            self, bot_under_test: Union[int, str], session_name: str = None, api_id: int = None, api_hash: str =
-            None, phone_number: str = None, max_wait_response: int = None, min_wait_consecutive: int = None,
-            raise_no_response: bool = None, global_action_delay: int = None, workdir: str = '.', **kwargs: Any
+            self, bot_under_test: Union[int, str], session_name: str = ..., api_id: int = ..., api_hash: str =
+            ..., phone_number: str = ..., max_wait_response: int = ..., min_wait_consecutive: int = ...,
+            raise_no_response: bool = ..., global_delay: int = ..., workdir: str = '.', **kwargs: Any
     ) -> Any:
         super().__init__(session_name, api_id, api_hash, phone_number, workdir=workdir)
         ...
 
-    def start(self, debug: bool = ...):
-        ...
+    def send(self, data: Object) -> Any: ...
+
+    def start(self, debug: bool = ...): ...
 
     def send_audio_await(
             self,
@@ -121,8 +122,7 @@ class BotIntegrationClient(InteractionClient):
             num_expected: int = ...,
             raise_: bool = ...,
             **kwargs
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
     def send_command_await(
             self,
@@ -131,8 +131,7 @@ class BotIntegrationClient(InteractionClient):
             num_expected: int = ...,
             raise_: bool = ...,
             **kwargs
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
     def send_photo_await(
             self,
@@ -147,8 +146,7 @@ class BotIntegrationClient(InteractionClient):
             reply_to_message_id: int = ...,
             progress: Callable = ...,
             **kwargs
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
     def send_sticker_await(
             self,
@@ -160,8 +158,7 @@ class BotIntegrationClient(InteractionClient):
             reply_to_message_id: int = ...,
             progress: Callable = ...,
             **kwargs
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
     def send_venue_await(
             self,
@@ -176,8 +173,7 @@ class BotIntegrationClient(InteractionClient):
             disable_notification: bool = ...,
             reply_to_message_id: int = ...,
             **kwargs
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
     def send_video_await(
             self,
@@ -196,8 +192,7 @@ class BotIntegrationClient(InteractionClient):
             reply_to_message_id: int = ...,
             progress: Callable = ...,
             **kwargs
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
     def send_video_note_await(
             self,
@@ -211,8 +206,7 @@ class BotIntegrationClient(InteractionClient):
             reply_to_message_id: int = ...,
             progress: Callable = ...,
             **kwargs
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
     def send_voice_await(
             self,
@@ -227,32 +221,14 @@ class BotIntegrationClient(InteractionClient):
             reply_to_message_id: int = ...,
             progress: Callable = ...,
             **kwargs
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
-    def ping(self, override_messages: List[str] = None) -> Response:
-        """
-        Send messages to a bot to determine whether it is online.
+    def ping(self, override_messages: List[str] = None) -> Response: ...
 
-        Specify a list of ``override_messages`` that should be sent to the bot, defaults to /start.
+    def clear_chat(self) -> None: ...
 
-        Args:
-            override_messages: List of messages to be sent, defaults to /start.
+    def _make_awaitable_method(self, name, method) -> None: ...
 
-        Returns:
-            Response
-        """
-        ...
+    def _get_command_list(self) -> List[BotCommand]: ...
 
-
-    def clear_chat(self) -> None:
-        ...
-
-    def _make_awaitable_method(self, name, method) -> None:
-        ...
-
-    def _get_command_list(self) -> List[BotCommand]:
-        ...
-
-    def get_default_filters(self, user_filters: Filter = ...) -> Filter:
-        ...
+    def get_default_filters(self, user_filters: Filter = ...) -> Filter: ...
