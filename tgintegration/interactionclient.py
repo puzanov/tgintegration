@@ -45,23 +45,19 @@ class InteractionClient(Client):
             # noinspection PyProtectedMember
             response._add_message(message)
 
-        print('adding handler')
         handler, group = self.add_handler(
             MessageHandler(
                 collect,
                 filters=action.filters
             ), -1
         )
-        print('done')
 
         try:
             # Start timer
             response.started = time.time()
 
             # Execute the action
-            print('acting')
             response.action_result = action.func(*action.args, **action.kwargs)
-            print(response.action_result)
 
             # Calculate maximum wait time
             timeout_end = datetime.now() + timedelta(seconds=action.max_wait)
